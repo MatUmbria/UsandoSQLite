@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import br.edu.utfpr.usandosqlite.entity.Cadastro
 
-class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION){
+class DatabaseHandler private constructor (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION){
 
     companion object {
         val DATABASE_VERSION = 1
@@ -16,6 +16,16 @@ class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
         val COLUMN_ID = "0"
         val COLUMN_NOME = "0"
         val COLUMN_TELEFONE = "0"
+
+        @Volatile
+        private var INSTANCE: DatabaseHandler? = null
+
+        fun getInstance(context: Context): DatabaseHandler {
+            if (INSTANCE == null) {
+                INSTANCE = DatabaseHandler(context)
+            }
+            return INSTANCE as DatabaseHandler
+        }
     }
 
     override fun onCreate(banco: SQLiteDatabase?) {
