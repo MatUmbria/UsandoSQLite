@@ -32,6 +32,18 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        initView()
+    }
+
+    private fun initView() {
+        if ( intent.getIntExtra("cod", 0) != 0) {
+            binding.etCod.setText( intent.getIntExtra("cod", 0).toString() )
+            binding.etNome.setText( intent.getStringExtra("nome") )
+            binding.etTelefone.setText( intent.getStringExtra("telefone") )
+        } else {
+            //tratar inclusão (novo registro)
+        }
     }
 
     fun btIncluirOnClick(view: View) {
