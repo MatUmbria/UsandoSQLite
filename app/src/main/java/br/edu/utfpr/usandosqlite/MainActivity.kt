@@ -43,6 +43,8 @@ class MainActivity : AppCompatActivity() {
             binding.etTelefone.setText( intent.getStringExtra("telefone") )
         } else {
             //tratar inclusão (novo registro)
+            binding.btExcluir.visibility = View.GONE
+            binding.btPesquisar.visibility = View.GONE
         }
     }
 
@@ -84,6 +86,8 @@ class MainActivity : AppCompatActivity() {
             msg,
             Toast.LENGTH_SHORT
         ).show()
+
+        finish()
     }
     fun btExcluirOnClick(view: View) {
 
