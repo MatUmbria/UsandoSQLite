@@ -3,8 +3,10 @@ package br.edu.utfpr.usandosqlite
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -32,7 +34,10 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
 
+    override fun onStart(){
+        super.onStart()
         initView()
     }
 
@@ -102,28 +107,49 @@ class MainActivity : AppCompatActivity() {
             "Exclusão efetuada com Sucesso.",
             Toast.LENGTH_SHORT
         ).show()
+
+        finish()
     }
     fun btPesquisarOnClick(view: View) {
 
         //validação dos campos de tela
 
         //acesso ao banco
-        val cadastro = banco.pesquisar( binding.etCod.text.toString().toInt() )
 
-        //apresentação da devolutiva visual para o usuário
-        if ( cadastro != null ) {
-            binding.etNome.setText( cadastro.nome )
-            binding.etTelefone.setText( cadastro.telefone )
-        } else {
-            binding.etNome.setText( "" )
-            binding.etTelefone.setText( "" )
+        val etCodPesquisar = EditText(this)
 
-            Toast.makeText(
-                this,
-                "Registro não encontro.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Digite o código")
+        builder.setView(etCodPesquisar)
+        builder.setCancelable(false)
+        builder.setNegativeButton("Fechar", null)
+        builder.setPositiveButton(
+            "Pesquisar",
+            { dialog, which ->
+                val cadastro: Cadastro? = banco.pesquisar( etCodPesquisar.text.toString().toInt() )
+
+                //apresentação da devolutiva visual para o usuário
+                if ( cadastro != null ) {
+                    binding.etCod.setText( etCodPesquisar.text.toString() )
+                    binding.etNome.setText( cadastro.nome )
+                    binding.etTelefone.setText( cadastro.telefone )
+                } else {
+                    binding.etNome.setText( "" )
+                    binding.etTelefone.setText( "" )
+
+                    Toast.makeText(
+                        this,
+                        "Registro não encontrado.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
+        builder.show()
+
+
+
+
     }
 
     fun btListarOnClick(view: View) {
