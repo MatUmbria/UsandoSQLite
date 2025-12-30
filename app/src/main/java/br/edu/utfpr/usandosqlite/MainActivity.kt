@@ -1,7 +1,6 @@
 package br.edu.utfpr.usandosqlite
 
-import android.content.ContentValues
-import android.database.sqlite.SQLiteDatabase
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -12,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import br.edu.utfpr.usandosqlite.database.DatabaseHandler
 import br.edu.utfpr.usandosqlite.databinding.ActivityMainBinding
 import br.edu.utfpr.usandosqlite.entity.Cadastro
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,76 +35,109 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun btIncluirOnClick(view: View) {
+
         //validação dos campos de tela
+
         val cadastro = Cadastro(
             0,
             binding.etNome.text.toString(),
             binding.etTelefone.text.toString()
         )
+
         //acesso ao banco
         banco.inserir(cadastro)
 
-        //apresentação da devolutiva para o usuário
+        //apresentação da devolutiva visual para o usuário
         Toast.makeText(
             this,
-            "Registro inserido com sucesso",
+            "Inclusão efetuada com Sucesso.",
             Toast.LENGTH_SHORT
         ).show()
     }
+
     fun btAlterarOnClick(view: View) {
+
+        //validação dos campos de tela
+
+        //acesso ao banco
         val cadastro = Cadastro( binding.etCod.text.toString().toInt(),
             binding.etNome.text.toString(),
             binding.etTelefone.text.toString()
-            )
+        )
+
         banco.alterar(cadastro)
 
+
+        //apresentação da devolutiva visual para o usuário
         Toast.makeText(
             this,
-            "Registro alterado com sucesso",
+            "Alteração efetuada com Sucesso.",
             Toast.LENGTH_SHORT
         ).show()
     }
     fun btExcluirOnClick(view: View) {
-        banco.excluir(binding.etCod.text.toString().toInt())
 
+        //validação dos campos de tela
+
+        //acesso ao banco
+        banco.excluir( binding.etCod.text.toString().toInt() )
+
+        //apresentação da devolutiva visual para o usuário
         Toast.makeText(
             this,
-            "Registro excluído com sucesso",
+            "Exclusão efetuada com Sucesso.",
             Toast.LENGTH_SHORT
         ).show()
     }
     fun btPesquisarOnClick(view: View) {
-        val cadastro : Cadastro? = banco.pesquisar(binding.etCod.text.toString().toInt())
 
-        if (cadastro != null) {
-            binding.etNome.setText(cadastro.nome)
-            binding.etTelefone.setText(cadastro.telefone)
+        //validação dos campos de tela
 
+        //acesso ao banco
+        val cadastro = banco.pesquisar( binding.etCod.text.toString().toInt() )
+
+        //apresentação da devolutiva visual para o usuário
+        if ( cadastro != null ) {
+            binding.etNome.setText( cadastro.nome )
+            binding.etTelefone.setText( cadastro.telefone )
         } else {
-            binding.etNome.setText("")
-            binding.etTelefone.setText("")
+            binding.etNome.setText( "" )
+            binding.etTelefone.setText( "" )
 
             Toast.makeText(
                 this,
-                "Registro não encontrado",
+                "Registro não encontro.",
                 Toast.LENGTH_SHORT
             ).show()
         }
     }
+
     fun btListarOnClick(view: View) {
-        val registros = banco.listar()
-
-        val saida = StringBuilder()
-
-        while (registros.moveToNext()) {
-            val nome = registros.getString(1)
-            val telefone = registros.getString(2)
-            saida.append("$nome - $telefone\n")
-        }
-        Toast.makeText(
-            this,
-            saida.toString(),
-            Toast.LENGTH_SHORT
-        ).show()
+        val intent = Intent( this, ListarActivity::class.java )
+        startActivity( intent )
     }
-}
+
+
+
+//        //acesso ao banco
+//        val registros = banco.listar()
+//
+//        //apresentação da devolutiva visual para o usuário
+//        val saida = StringBuilder()
+//
+//        while ( registros.moveToNext() ) {
+//            val nome = registros.getString(DatabaseHandler.COLUMN_NOME.toInt() )
+//            val telefone = registros.getString( DatabaseHandler.COLUMN_TELEFONE.toInt() )
+//
+//            saida.append( " ${nome} - ${telefone} \n " )
+//        }
+//
+//        Toast.makeText(
+//            this,
+//            saida.toString(),
+//            Toast.LENGTH_SHORT
+//        ).show()
+
+
+
+} //fim da MainActivity
